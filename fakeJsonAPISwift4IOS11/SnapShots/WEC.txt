@@ -1,0 +1,158 @@
+import UIKit
+import Alamofire
+
+class ViewController: UIViewController {
+
+    let urlString = "http://beta.json-generator.com/api/json/get/EJoC6gB_z"
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        // Choose only one function here for calling webservice
+        getValueofUser()
+
+        //Or
+
+        getuserDetails()
+    }
+
+    //MARK: - By Using Alamofire
+    func getValueofUser(){
+
+        Alamofire.request(urlString, method: .get)
+            .responseJSON { response in
+                print("Success: \(response.result.isSuccess)")
+                switch response.result {
+                case .success:
+                    self.successGetTermsData(response: response.result.value! as Any)
+                case .failure(let error):
+                    print(error)
+                }
+
+           }
+
+    }
+
+    //MARK: - Or Use URLSession methods
+    func getuserDetails(){
+        let url = URL(string: urlString)
+        URLSession.shared.dataTask(with:url!) { (data, response, error) in
+            if error != nil {
+                print(error ?? "")
+            } else {
+                do {
+                    let response = try JSONSerialization.jsonObject(with: data!, options: [])
+                    self.successGetTermsData(response: response)
+                } catch let error as NSError {
+                    print(error)
+                }
+            }
+
+            }.resume()
+
+    }
+
+    func successGetTermsData(response: Any){
+        let arrayOfDetails = response as? [[String: Any]] ?? []
+
+        // Do Something with the Array
+        //Here you will be get Array of User Related Details
+        let email = arrayOfDetails[0]["Email"] as? String ?? ""
+        let username = arrayOfDetails[0]["UserName"] as? String ?? ""
+        let Id = arrayOfDetails[0]["Id"] as? Int ?? 0
+        let UserRole = arrayOfDetails[0]["UserRole"] as? String ?? ""
+        print("Email ID -" ,email, "User Name -", username, "ID -",Id, "UserRole -", UserRole)
+    }
+
+}
+
+*********************************************
+https://jsonplaceholder.typicode.com/users
+
+
+
+<key>NSAppTransportSecurity</key>
+ <dict>
+      <key>NSAllowsArbitraryLoads</key>
+     <true/>
+ </dict>
+
+DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+   // Code
+}
+
+import UIKit
+
+class WebViewController: UIViewController, UIWebViewDelegate
+{
+    var publisher: Publisher!
+    
+    @IBOutlet weak var progressView: UIProgressView!
+    @IBOutlet private weak var webView: UIWebView!
+    
+    private var hasFinishLoading = false
+  
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = publisher.title
+        webView.delegate = self
+        webView.stopLoading()
+        let pageURL = NSURL(string: publisher.url)!
+        let request = NSURLRequest(URL: pageURL)
+        webView.loadRequest(request)
+//        navigationController?.hidesBarsOnSwipe = true
+    }
+    
+    
+    func webViewDidStartLoad(webView: UIWebView) {
+        hasFinishLoading = false
+        updateProgress()
+    }
+    
+    func webViewDidFinishLoad(webView: UIWebView) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(1.0 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+            [weak self] in
+            if let _self = self {
+                _self.hasFinishLoading = true
+            }
+        }
+    }
+    
+    deinit {
+        webView.stopLoading()
+        webView.delegate = nil
+    }
+    
+    func updateProgress() {
+        if progressView.progress >= 1 {
+            progressView.hidden = true
+        } else {
+            
+            if hasFinishLoading {
+                progressView.progress += 0.002
+            } else {
+                if progressView.progress <= 0.3 {
+                    progressView.progress += 0.004
+                } else if progressView.progress <= 0.6 {
+                    progressView.progress += 0.002
+                } else if progressView.progress <= 0.9 {
+                    progressView.progress += 0.001
+                } else if progressView.progress <= 0.94 {
+                    progressView.progress += 0.0001
+                } else {
+                    progressView.progress = 0.9401
+                }
+            }
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(0.008 * Double(NSEC_PER_SEC))), dispatch_get_main_queue()) {
+                [weak self] in
+                if let _self = self {
+                    _self.updateProgress()
+                }
+            }
+        }
+    }
+
+
+}
