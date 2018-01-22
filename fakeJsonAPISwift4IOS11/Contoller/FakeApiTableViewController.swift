@@ -10,15 +10,16 @@ import UIKit
 
 class FakeApiTableViewController: UITableViewController {
 
-   lazy var mymodel = [MyModel]()
+     let urlString = "https://jsonplaceholder.typicode.com/users"
+    var mymodel = [MyModel]()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        mymodel = MyModel.downloadAllData()
-       
-        self.tableView.reloadData()
+        getuserDetails()
+        
+        
         
         tableView.estimatedRowHeight = tableView.rowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -26,7 +27,50 @@ class FakeApiTableViewController: UITableViewController {
         
     }
     
-    
+    func getuserDetails()
+    {
+        let url = URL(string: urlString)
+        URLSession.shared.dataTask(with:url!) { (data, response, error) in
+            if error != nil {
+                print(error ?? "")
+            } else {
+                do {
+                   
+                    if NetworkService.parseJSONFromData(jsonData: data as NSData?) != nil
+                    {
+                        if let jsonDict = NetworkService.parseJSONFromData(jsonData: data as NSData? )
+                        {
+                            for jsonD in jsonDict
+                            {
+                                let MM = MyModel.init(fakeapi: jsonD)
+                                print(MM.addGeoLat ?? "")
+                                print(MM.name ?? "")
+                                print(MM.addressZipCode ?? "")
+                                print(MM.companyCatchPhrase ?? "")
+                                self.mymodel.append(MM)
+                                DispatchQueue.main.async
+                                    {
+                                    self.tableView.reloadData()
+                                }
+                               
+                                print(self.mymodel.count)
+                            }
+                            
+                        }
+                    }
+                    
+                    
+                    
+                } catch let error as NSError {
+                    print(error)
+                }
+            }
+            
+            }.resume()
+        
+        
+        
+    }
     
     // MARK: - Table view data source
     

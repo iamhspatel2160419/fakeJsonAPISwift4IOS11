@@ -7,6 +7,7 @@
 //
 
 import Foundation
+
 class MyModel
 {
     var id: String?
@@ -25,47 +26,41 @@ class MyModel
     var companyCatchPhrase: String?
     var companyBs: String?
     
-    init(id:String,name:String,username:String,
-         email:String,
-         addressStreet:String,
-         addressSuit:String,
-         addressCity:String,
-         addressZipCode:String,
-         addGeoLat:String,
-         addGeoLon:String,
-         phone:String,
-         website:String,
-         companyName:String,
-         companyCatchPhrase:String,
-         companyBs:String
-         )
-    {
-        self.id = id
-        self.name = name
-        self.username = username
-        self.email = email
-        self.addressStreet = addressStreet
-        self.addressSuit = addressSuit
-        self.addressCity = addressCity
-        self.addressZipCode = addressZipCode
-        self.addGeoLat = addGeoLat
-        self.addGeoLon = addGeoLon
-        self.phone = phone
-        self.website = website
-        self.companyName = companyName
-        self.companyCatchPhrase = companyCatchPhrase
-        self.companyBs = companyBs
-    }
+//    init(id:String,name:String,username:String,
+//         email:String,
+//         addressStreet:String,
+//         addressSuit:String,
+//         addressCity:String,
+//         addressZipCode:String,
+//         addGeoLat:String,
+//         addGeoLon:String,
+//         phone:String,
+//         website:String,
+//         companyName:String,
+//         companyCatchPhrase:String,
+//         companyBs:String
+//         )
+//    {
+//        self.id = id
+//        self.name = name
+//        self.username = username
+//        self.email = email
+//        self.addressStreet = addressStreet
+//        self.addressSuit = addressSuit
+//        self.addressCity = addressCity
+//        self.addressZipCode = addressZipCode
+//        self.addGeoLat = addGeoLat
+//        self.addGeoLon = addGeoLon
+//        self.phone = phone
+//        self.website = website
+//        self.companyName = companyName
+//        self.companyCatchPhrase = companyCatchPhrase
+//        self.companyBs = companyBs
+//    }
 
     init(fakeapi:[String:AnyObject])
     {
-//        self.id = String(describing: fakeapi["id"] as? Int)
-//        self.name = fakeapi["name"] as? String
-//        username = fakeapi["username"] as? String
-//        email = fakeapi["email"] as? String
-//        phone = fakeapi["phone"] as? String
-//        phone = fakeapi["phone"] as? String
-//        website = fakeapi["website"] as? String
+        
         
         if let rollnumber =  fakeapi["id"] as? Int
         {
@@ -98,7 +93,7 @@ class MyModel
             {
                 if let companyName = company["name"] as? String
                 {
-                    print("companyName = \(companyName)")
+                   // print("companyName = \(companyName)")
                     self.companyName = companyName
                 }
                 if let companyCatchPhrase = company["catchPhrase"] as? String
@@ -120,7 +115,7 @@ class MyModel
             {
                if let addressStreet = addressCity["street"] as? String
                {
-                print("addressStreet = \(addressStreet)")
+               // print("addressStreet = \(addressStreet)")
                   self.addressStreet = addressStreet
                }
                if let addresssuite = addressCity["suite"] as? String
@@ -139,7 +134,7 @@ class MyModel
                  {
                     if let addressGeoLat = addressGeo["lat"] as? String
                     {
-                         print("addressGeoLat = \(addressGeoLat)")
+                     //    print("addressGeoLat = \(addressGeoLat)")
                         self.addGeoLat = addressGeoLat
                     }
                     if let addressGeoLon = addressGeo["lng"] as? String
@@ -149,43 +144,9 @@ class MyModel
                  }
             }
         }
-        
-        
-      
-       
-        
-        
     }
     
-    static func downloadAllData() -> [MyModel]
-    {
-        var allMyModel = [MyModel]()
-        
-        
-        NetworkService(url: NSURL(string: "https://jsonplaceholder.typicode.com/users")!)
-            .downloadData(completion:
-                {
-                   (data) in
-        
-         if NetworkService.parseJSONFromData(jsonData: data) != nil
-         {
-            if let jsonDict = NetworkService.parseJSONFromData(jsonData: data)
-            {
-                
-                for jsonD in jsonDict
-                {
-                let newFakeDataPack1 = MyModel.init(fakeapi: jsonD)
-                  
-                   allMyModel.append(newFakeDataPack1)
-                }
-                
-            }
-         }
-        
-            
-        })
-        return allMyModel
-    }
+
     
 }
 
